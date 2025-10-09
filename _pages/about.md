@@ -35,7 +35,7 @@ My research interests lie in **multimodal large language models (MLLMs)**, **vid
 
 [VideoRoPE: What Makes for Good Video Rotary Position Embedding?](https://github.com/Wiselnn570/VideoRoPE)***[Accepted by ICML2025 as Oral Presentation!]***
 
-***Xilin Wei****, Xiaoran Liu*, Yuhang Zang, Xiaoyi Dong, Pan Zhang, Yuhang Cao, Jian Tong, Haodong Duan, Qipeng Guo, Jiaqi Wang, Xipeng Qiu, Dahua Lin
+__Xilin Wei__*, Xiaoran Liu*, Yuhang Zang, Xiaoyi Dong, Pan Zhang, Yuhang Cao, Jian Tong, Haodong Duan, Qipeng Guo, Jiaqi Wang, Xipeng Qiu, Dahua Lin
 
 <span> This work introduces VideoRoPE, which addresses four key properties essential for RoPE in video applications. By incorporating Low-frequency Temporal Allocation (LTA), Diagonal Layout (DL), and Adjustable Temporal Spacing (ATS), VideoRoPE effectively meets these requirements. We also present the V-NIAH-D retrieval task to expose the limitations of current position embedding designs, especially in frequency allocation. Our findings show that existing Video LLMs are prone to frequency-based distractors. Extensive experiments demonstrate that VideoRoPE consistently outperforms other RoPE variants.</span>
 
