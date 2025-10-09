@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="VideoRoPE: What Makes for Good Video Rotary Position Embedding?">
+    <meta name="keywords" content="RoPE">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VideoRoPE</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" href="images/logo1.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"></script>
+    <script type="module" src="https://gradio.s3-us-west-2.amazonaws.com/3.27.0/gradio.js"></script>
+  </head>
+
+  <style>
+    .expandable-card .card-text-container {
+      max-height: 200px;
+      overflow-y: hidden;
+      position: relative;
+    }
+
+    .expandable-card.expanded .card-text-container {
+      max-height: none;
+    }
+
+    .expand-btn {
+      position: relative;
+      display: none;
+      background-color: rgba(255, 255, 255, 0.8);
+      /* margin-top: -20px; */
+      /* justify-content: center; */
+      color: #510c75;
+      border-color: transparent;
+    }
+
+    .expand-btn:hover {
+      background-color: rgba(200, 200, 200, 0.8);
+      text-decoration: none;
+      border-color: transparent;
+      color: #510c75;
+    }
+
+    .expand-btn:focus {
+      outline: none;
+      text-decoration: none;
+    }
+
+    .expandable-card:not(.expanded) .card-text-container:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 90px;
+      background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 1));
+    }
+
+    .expandable-card:not(.expanded) .expand-btn {
+      margin-top: -40px;
+    }
+
+    .card-body {
+      padding-bottom: 5px;
+    }
+
+    .vertical-flex-layout {
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .figure-img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .adjustable-font-size {
+      font-size: calc(0.5rem + 2vw);
+    }
+
+    .chat-history {
+      flex-grow: 1;
+      overflow-y: auto;
+      /* overflow-x: hidden; */
+      padding: 5px;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    #gradio pre {
+      background-color: transparent;
+    }
+  </style>
+
+  <body></body>
+
+    <section class="hero">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column has-text-centered">
+              <h1 class="title is-1 publication-title"><img id="logo1" width="5%" src="images/logo1.png"> VideoRoPE:</h1>
+              <h1 class="title is-2 publication-title">What Makes for Good Video Rotary Position Embedding?</h1>
+              <!-- <h5 class="subtitle is-5 publication-awards">ECCV 2024</h5> -->
+              <div class="is-size-5 publication-authors">
+                <br>
+                <span class="author-block">
+                  <a href="https://github.com/Wiselnn570/" style="font-weight:normal;">Xilin Wei<b><sup>* &sect;1,2</sup></b></a>,
+                </span>
+                <span class="author-block">
+                  <a href="https://scholar.google.de/citations?user=Qe6F4J4AAAAJ&hl=en" style="font-weight:normal;">Xiaoran Liu<b><sup>* &sect;1,2,3</sup></b></a>,
+                </span>
+                <span class="author-block">
+                  <a href="https://yuhangzang.github.io" style="font-weight:normal;">Yuhang Zang<sup>2</sup></a>,
+                </span>
+                <span class="author-block">
+                  <a href="https://lightdxy.github.io" style="font-weight:normal;">Xiaoyi Dong<sup>2</sup></a>,
+                </span>
+                <span class="author-block">
+                  <a href="https://panzhang0212.github.io" style="font-weight:normal;">Pan Zhang<sup>2</sup></a>,
+                </span>
+                <span class="author-block">
+                  <a href="https://scholar.google.com/citations?user=sJkqsqkAAAAJ&hl=en" style="font-weight:normal;">Yuhang Cao<sup>2</sup></a>,
+                </span>
+                <span class="author-block">
+                  <a href="" style="font-weight:normal;">Jian Tong<sup>2</sup></a>,
+                </span>
+
+                <span class="author-block">
+                  <!-- <a href="https://kennymckormick.github.io" style="font-weight:normal;">Haodong Duan<sup>2</sup></a>,
+                   -->
+                  <a href="https://kennymckormick.github.io" style="font-weight:normal;">Haodong Duan<sup>2</sup></a>,
+                </span>
+                <span class="author-block">
+                  <a href="https://scholar.google.com/citations?user=k3mPGKgAAAAJ&hl=en" style="font-weight:normal;">Qipeng Guo<sup>2,3</sup></a>,
+                </span>
+                <span class="author-block">
+                  <a href="https://myownskyw7.github.io" style="font-weight:normal;">Jiaqi Wang<sup>2,3</sup></a>,
+                </span>
+                <span class="author-block">
+                  <a href="https://xpqiu.github.io/en.html" style="font-weight:normal;">Xipeng Qiu<b><sup>1,2,3</sup></b></a>,
+                </span>
+                <span class="author-block">
+                  <a href="http://dahua.site/" style="font-weight:normal;">Dahua Lin<b><sup>2</sup></b></a>
+                </span>
+              </div>
+
+              <div class="is-size-5 publication-authors">
+                <span class="author-block"><b style="color:#f68946; font-weight:normal">&#x25B6 </b> <sup>1</sup> Fudan University</b></span>
+                <span class="author-block"><b style="color:#008ad7; font-weight:normal">&#x25B6 </b> <sup>2 </sup> Shanghai AI Laboratory</span>
+                <span class="author-block"><b style="color:#0b00d7; font-weight:normal">&#x25B6 </b> <sup>3 </sup> Shanghai Innovation Institute</span>
+              </div>
+              
+              <div class="is-size-6 publication-authors">
+                <br>
+                <span class="author-block"><b>*</b> Equal contribution.</span>
+              </div>
+              
+              <div class="is-size-6 publication-authors">
+                <span class="author-block"><b><sup>&sect;</sup></b> Work done during an internship in Shanghai AI Laboratory.</span>
+              </div>
+
+              <div class="column has-text-centered">
+                <div class="publication-links">
+                  <span class="link-block">
+                    <!--  -->
+                    <a href="https://arxiv.org/pdf/2502.05173" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="ai ai-arxiv"></i>
+                      </span>
+                      <span>arXiv</span>
+                    </a>
+                  </span>
+                  <span class="link-block">
+                    <!--  -->
+                    <a href="https://github.com/Wiselnn570/VideoRoPE" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fab fa-github"></i>
+                      </span>
+                      <span>Code & Benchmark</span>
+                    </a>
+                  </span>
+                  <!-- <span class="link-block">
+                    <a href="https://huggingface.co/spaces/Lin-Chen/ShareGPT4V-7B" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="far fa-images"></i>
+                      </span>
+                      <span>ShareGPT4V-7B Demo</span>
+                    </a>
+                  </span>
+                  <span class="link-block">
+                    <a href="https://huggingface.co/spaces/Lin-Chen/Share-Captioner" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="far fa-images"></i>
+                      </span>
+                      <span>Share-Captioner Demo</span>
+                    </a>
+                  </span> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- <section class="hero teaser">
+      <div class="container is-max-desktop">
+        <div class="hero-body">
+          <table width="77%" align="center" border="0" cellspacing="0" cellpadding="20"><tbody>
+            <tr>
+              <td>
+                <heading>🔥<b>What's New</b></heading>
+                <div style="height: 250px; overflow: auto;">
+                  <ul> 
+                    <li>[2025.02.06] The Homepage is available.</li>
+                    <li> [2024.07.01] <font color="red"><b>ShareGPT4V</b> is accepted by <b>ECCV 2024</b>!</font>
+                    <li> [2024.05.08] <a href="https://sharegpt4video.github.io/"><b><img src="images/Share4video.jpg" style="width:2.0em;vertical-align: middle" alt="logo1"/><u>ShareGPT4Video</u></b></a> is released, which contains
+                      <font color="#3579F6"><b>40K</b></font> 
+                      detailed video
+                      <font color="#3579F6"><sup><b>291 hours</b></sup></font> 
+                      captions constructed using GPT4V, and 
+                      <font color="#3579F6"><b>4.8M</b></font> 
+                      high quality video
+                      <font color="#3579F6"><sup><b>3000 hours</b></sup></font> 
+                      captions constructed using ShareCaptioner-Video!
+                    <li> [2023.12.13] The <b>code</b> and <b>checkpoint</b> of <b>Share-Captioner</b> are available!
+                    <li> [2023.11.23] The <b>Share-Captioner demo</b> is available!
+                    <li> [2023.11.22] The <b>code</b> and <b>checkpoint</b> of <b>ShareGPT4V-7B</b> are available!
+                    <li> [2023.11.22] The <b>ShareGPT4V-7B demo</b> is available!
+                    <li> [2023.11.21] <b>ShareGPT4V Dataset</b> is available!
+                    <li> [2023.11.21] The <b>paper</b> and <b>project</b> page are released! -->
+                  <!-- </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody></table>
+          <br>
+          <table width="79%" align="center" border="0" cellspacing="0" cellpadding="20"><tbody>
+            <tr>
+              <td>
+                <div style="height: 162px; overflow: auto;">
+                  <ul> 
+                    <li> 🚀 <b>A large-scale highly descriptive image-text dataset.</b>
+                    <li> 🚀 <b>100K</b> GPT4-Vision-generated captions, <b>1.2M</b> high-quality captions.
+                    <li> 🚀 <b>A general image captioner</b>, approaching GPT4-Vision's caption capability.
+                    <li> 🚀 A superior large multi-modal model, <b>ShareGPT4V-7B</b>.
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody></table>
+        </div>
+      </div>
+    </section> -->
+
+    <section class="section"  style="background-color:#efeff081" id="Abstract">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-six-fifths">
+            <h2 class="title is-3">Abstract</h2>
+            <div class="content has-text-justified">
+              <p>
+                While Rotary Position Embedding (RoPE) and its variants are widely adopted for their long-context capabilities, the extension of the 1D RoPE to video, with its complex spatio-temporal structure, remains an open challenge.
+This work first introduces a comprehensive analysis that identifies four key characteristics essential for the effective adaptation of RoPE to video, which have not been fully considered in prior work.
+As part of our analysis, we introduce a challenging <b>V-NIAH-D</b> (Visual Needle-In-A-Haystack with Distractors) task, which adds periodic distractors into V-NIAH.
+The V-NIAH-D task demonstrates that previous RoPE variants, lacking appropriate temporal dimension allocation, are easily misled by distractors.
+Based on our analysis, we introduce <b>VideoRoPE</b>, with a 3D structure designed to preserve spatio-temporal relationships.
+VideoRoPE features <b>low-frequency temporal allocation</b> to mitigate periodic oscillations, a <b>diagonal layout</b> to maintain spatial symmetry, and <b>adjustable temporal spacing</b> to decouple temporal and spatial indexing.
+VideoRoPE consistently surpasses previous RoPE variants, across diverse downstream tasks such as long video retrieval, video understanding, and video hallucination.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="section" id="VideoRoPE">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-six-fifths">
+          <h2 class="title is-3"><img id="logo1" width="3%" src="images/logo1.png"> VideoRoPE: Key Characteristics</h2>
+        </div>
+      </div>
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-full-width">
+            <div class="content has-text-justified">
+              
+              <style>
+                table.GeneratedTable {
+                  width: 100%;
+                  background-color: #ffffff;
+                  border-collapse: collapse;
+                  border-width: 2px;
+                  border-color: #c1c4c5;
+                  border-style: solid;
+                  color: #000000;
+                }
+                
+                table.GeneratedTable td, table.GeneratedTable th {
+                  border-width: 2px;
+                  border-color: #9b9d9e;
+                  border-style: solid;
+                  padding: 3px;
+                }
+                
+                table.GeneratedTable thead {
+                  background-color: #6691ee;
+                }
+              </style>
+              <div class="column is-six-fifths" width="80%">
+              <table class="GeneratedTable">
+                <style>
+                  .red-cross {
+                    color: red;
+                  }
+                  .green-cross {
+                    color: green;
+                  }
+                </style>
+                <thead>
+                  <tr>
+                    <th>Method</th>
+                    <th>2D/3D Structure</th>
+                    <th>Frequency Allocation</th>
+                    <th>Spatial Symmetry</th>
+                    <th>Temporal Index Scaling</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Vanilla RoPE</td>
+                    <td class="red-cross">✗</td>
+                    <td class="red-cross">✗</td>
+                    <td class="red-cross">✗</td>
+                    <td class="red-cross">✗</td>
+                  </tr>
+                  <tr>
+                    <td>TAD-RoPE</td>
+                    <td class="red-cross">✗</td>
+                    <td class="red-cross">✗</td>
+                    <td class="red-cross">✗</td>
+                    <td class="green-cross">✔︎</td>
+                  </tr>
+                  <tr>
+                    <td>RoPE-Tie</td>
+                    <td class="green-cross">✔︎</td>
+                    <td class="red-cross">✗</td>
+                    <td class="green-cross">✔︎</td>
+                    <td class="red-cross">✗</td>
+                  </tr>
+                  <tr>
+                    <td>M-RoPE</td>
+                    <td class="green-cross">✔︎</td>
+                    <td class="red-cross">✗</td>
+                    <td class="red-cross">✗</td>
+                    <td class="red-cross">✗</td>
+                    
+                  </tr>
+                  <tr bgcolor="#a4cff4">
+                    <td>VideoRoPE</td>
+                    <td class="green-cross">✔︎</td>
+                    <td class="green-cross">✔︎</td>
+                    <td class="green-cross">✔︎</td>
+                    <td class="green-cross">✔︎</td>
+                  </tr>
+                </tbody>
+              </table>
+              <font color="#224baf" size=4>
+                The table compares different RoPE variants for Video Large Language Models (Video LLMs), specifically focusing on their features across four categories: 2D/3D Structure, Frequency Allocation, Spatial Symmetry, and Temporal Index Scaling. 
+              </font>
+                          
+              </div>
+              <!-- <font color="#224baf" size=4><b>
+              <p>
+                We illustrate the procedure for collecting highly descriptive captions from GPT4-Vision via various image sources and data-specific prompts, 
+                resulting in <b>100K high-quality captions</b> that encapsulate a wide array of information conveyed by the images.
+                <centering>
+                  <div style="text-align: center;">
+                    <img id="teaser" width="100%" src="images/datasource_a.png">     
+                  </div>
+                </centering>
+                A comparison between the caption in our proposed <b>ShareGPT4V dataset</b> and those utilized by recent large multi-modal models (LMMs):
+                <div class="columns is-centered has-text-centered">
+                  <div class="column is-six-fifths" style="display: flex; align-items: flex-start; justify-content: center;">  
+                    <centering>
+                      <div style="text-align: center;">
+                        <img id="teaser" width="100%" src="images/compare_a.png">     
+                      </div>
+                    </centering>    
+                  </div>
+                </div>
+              </p>
+              </b></font> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="VideoRoPE:Analysis">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-six-fifths">
+          <h2 class="title is-3"><img id="logo1" width="3%" src="images/logo1.png"> VideoRoPE: Analysis</h2>
+        </div>
+      </div>
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-full-width">
+            <font color="#224baf" size=4><b>
+            <div class="content has-text-justified">
+              <centering>
+                <div style="text-align: center;">
+                  <img id="teaser" width="100%" src="images/analysis1.png">     
+                </div>
+              </centering>
+              Left: To demonstrate the importance of frequential allocation, based on VIAH (a) we present a more challenging V-NIAH-D task (b) that similar images are inserted as distractors. Right: Compared to M-RoPE, our VideoRoPE is more robust in retrieval and is less affected by distractors.
+              <centering>
+                <div style="text-align: center;">
+                  <img id="teaser" width="100%" src="images/analysis2.png">     
+                </div>
+                Attention-based frequential allocation analysis. Middle: M-RoPE's temporal dimension (t) is limited to local information,
+                resulting in a diagonal layout. Bottom: VideoRoPE effectively
+                retrieves the needle using the temporal dimension. The x and
+                y coordinates represent the video frame number, e.g., 50 for 50
+                frames.
+              </centering>
+            </div>
+            </b></font>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="VideoRoPE:Design">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-six-fifths">
+          <h2 class="title is-3"><img id="logo1" width="3%" src="images/logo1.png"> VideoRoPE: Design</h2>
+        </div>
+      </div>
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-full-width">
+            <font color="#224baf" size=4><b>
+            <p>We present VideoRoPE, a video position embedding strategy that prioritizes temporal modeling with <b>Low-frequency Temporal Allocation (LTA)</b>, reduces oscillations, and ensures robustness. It uses a <b>Diagonal Layout (DL)</b> for spatial symmetry and introduces <b>Adjustable Temporal Spacing (ATS)</b> to control temporal spacing. VideoRoPE effectively models spatiotemporal information for robust video representation.</p>
+            <div class="content has-text-justified">
+              <centering>
+                <div style="text-align: center;">
+                  <img id="teaser" width="90%" src="images/design1.png">     
+                </div>
+              </centering>
+             (a) M-RoPE models temporal dependencies using the first 16 rotary angles, which exhibit higher
+frequencies and more pronounced oscillations. (b) In contrast, VideoRoPE models temporal dependencies using the last 16 rotary
+angles, characterized by significantly wider, monotonic intervals. Our frequency allocation effectively mitigates the misleading
+influence of distractors in V-NIAH-D.
+              <centering>
+                <div style="text-align: center;">
+                  <img id="teaser" width="90%" src="images/design2.png">     
+                </div>
+                The 3D visualization for different position embedding. (a) The vanilla 1D RoPE does not incorporate spatial
+modeling. (b) M-RoPE, while have the 3D structure, introduces a discrepancy in index growth for visual tokens
+across frames, with some indices remaining constant. (c) In contrast, our VideoRoPE achieves the desired balance, maintaining the
+consistent index growth pattern of vanilla RoPE while simultaneously incorporating spatial modeling.
+              </centering>
+              <centering>
+                <div style="text-align: center;">
+                  <img id="teaser" width="90%" height="80%" src="images/design3.png">     
+                </div>
+                The position embeddings of adjacent text tokens for
+Vanilla RoPE (top row), the corresponding visual tokens in adjacent frames for M-RoPE (middle row) and our VideoRoPE
+(bottom row) with interleaved spatial and temporal last design.
+              </centering>
+            </div>
+            </b></font>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <section class="section" id="Performance">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-six-fifths">
+          <h2 class="title is-3">📊 Performance</h2>
+        </div>
+      </div>
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-full-width">
+            <font color="#224baf" size=4><b>
+            <p>
+              We visualize the retrieval results for V-NIAH and V-NIAH-D, demonstrating that VideoRoPE outperforms other RoPE variants, particularly in extrapolation within the test context, with a color gradient from green to red representing retrieval performance from perfect to zero.
+            </p>
+            <centering>
+              <div style="text-align: center;">
+                <img id="teaser" width="100%" src="images/performance1.png">     
+              </div>
+            </centering>
+            <br>
+            <p>
+              VideoRoPE consistently outperforms previous RoPE variants across diverse downstream tasks such as long video retrieval, video understanding, and video hallucination, demonstrating superior performance on various benchmarks.
+            </p>
+            <centering>
+              <div style="text-align: center;">
+                <img id="teaser" width="45%" src="images/performance2.png">     
+              </div>
+            </centering>
+            </b></font>           
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- <section class="section" style="background-color:#efeff081" id="examples">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-six-fifths">
+          <h2 class="title is-3">Captioning and Conversation Examples</h2>
+        </div>
+      </div>
+      <div class="container mt-5">
+        <div class="form-row" style="justify-content: flex-end;">
+          <div class="form-group col-md-1">
+            <div class="col-md-2" style="width: 100%"><label>&nbsp;</label></div>
+            <div class="btn-group" role="group" aria-label="Left and Right Controller"
+              style="width: 100%;align-items: flex-end;justify-content: center;flex-direction: row;display: flex;">
+              <button type="button" class="form-control btn btn-primary" id="prev-question"><i class="material-icons">keyboard_arrow_left</i></button>
+              <button type="button" class="form-control btn btn-primary" id="next-question"><i class="material-icons">keyboard_arrow_right</i></button>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center;">
+          <div class="card mb-4" style="width: 100%; display: flex; align-items: center;">
+            <div class="card-body" id="selected-question" style="display: flex; height: 80vh;">
+              <div class="chat-history">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section> -->
+
+
+    <!-- <section class="section" style="background-color:#efeff081" id="demo">
+      <div class="container is-max-desktop" id="gradio">
+        <gradio-app src="https://llava.hliu.cc"></gradio-app> TODO
+      </div>
+    </section> -->
+
+    <section class="section" id="BibTeX">
+      <div class="container is-max-desktop content">
+        <h2 class="title">BibTeX</h2>
+        <p><b>
+          If you find our work helpful for your research, please consider giving a citation 📃
+        </b></p>
+        <pre><code>
+@article{wei2025videorope,
+  title={VideoRoPE: What Makes for Good Video Rotary Position Embedding?},
+  author={Wei, Xilin and Liu, Xiaoran and Zang, Yuhang and Dong, Xiaoyi and Zhang, Pan and Cao, Yuhang and Tong, Jian and Duan, Haodong and Guo, Qipeng and Wang, Jiaqi and others},
+  journal={arXiv preprint arXiv:2502.05173},
+  year={2025}
+}
+      </code></pre>
+      </div>
+    </section>
+
+    <section class="section" id="Acknowledgement">
+      <div class="container is-max-desktop content">
+        <h2 class="title">Acknowledgement</h2>
+        <p>
+          This website is adapted from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> and <a href="https://github.com/LLaVA-VL/llava-vl.github.io">LLaVA</a>, licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+          Commons Attribution-ShareAlike 4.0 International License</a>.  We thank the LLaMA team for giving us access to their models, and open-source projects, including Alpaca and Vicuna.
+        </p>
+
+        <p>
+          <b>Usage and License Notices</b>: The data, code and checkpoint is intended and licensed for research use only. They are also restricted to uses that follow the license agreement of CLIP,  LLaMA, Vicuna and GPT-4. The dataset is CC BY NC 4.0 (allowing only non-commercial use) and models trained using the dataset should not be used outside of research purposes.
+        </p>
+        <br>
+        <centering>
+          <div style="width: 30%; text-align: center;">
+            <!-- <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=OBwTTy4PxcDTXywZQDScAH9f4sY0jUudxbVX7PqpD5g&cl=ffffff&w=a"></script> -->
+            <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=a&t=tt&d=OBwTTy4PxcDTXywZQDScAH9f4sY0jUudxbVX7PqpD5g&co=2d78ad&ct=ffffff&cmo=3acc3a&cmn=ff5353'></script>
+          </div>
+        </centering>
+      </div>
+    </section>
+
+    <script>
+      // Handle message showing
+      function createChatRow(sender, text, imageSrc) {
+        var article = document.createElement("article");
+        article.className = "media"
+
+        var figure = document.createElement("figure");
+        figure.className = "media-left";
+
+        var span = document.createElement("span");
+        span.className = "icon is-large";
+
+        var icon = document.createElement("i");
+        var img = document.createElement("img");
+
+        if (sender === "User") {
+          img.src = "images/user.png"
+        }
+        else if (sender === "ShareGPT4V-7B") {
+          img.src = "images/logo1.png"
+        }
+        else if (sender === "ShareGPT4V (100K)") {
+          img.src = "images/logo1.png"
+        }
+        else {
+          img.src = "images/captioner.png"
+        }
+        icon.appendChild(img);
+
+        var media = document.createElement("div");
+        media.className = "media-content";
+
+        var content = document.createElement("div");
+        content.className = "content";
+
+        var para = document.createElement("p");
+
+        // wrap text in pre tag to preserve whitespace and line breaks
+        var pre_text = document.createElement("pre");
+        pre_text.style = "background-color: white; font-size: 18px; font-family: Arial; padding: 0; margin: 0; white-space: pre-wrap; word-wrap: break-word;";
+        var paraText = document.createTextNode(text);
+        pre_text.appendChild(paraText);
+
+        var strong = document.createElement("strong");
+        strong.innerHTML = sender;
+        var br = document.createElement("br");
+
+        para.appendChild(strong);
+        para.appendChild(br);
+        para.appendChild(pre_text);
+
+        if (imageSrc) {
+          var img = document.createElement("img");
+          img.src = imageSrc;
+          img.style = "max-width: 100%; max-height: 300px;"; // Adjust the style as needed
+          para.appendChild(img);
+        }
+
+        content.appendChild(para);
+        media.appendChild(content);
+        span.appendChild(icon);
+        figure.appendChild(span);
+        if (sender !== "Description") {
+          article.appendChild(figure);
+        };
+        article.appendChild(media);
+        return article;
+      }
+
+      function addMessageToChatHistory(sender, message, imageSrc) {
+        const chatHistory = document.querySelector('.chat-history');
+        const chatRow = createChatRow(sender, message, imageSrc);
+        chatHistory.appendChild(chatRow);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }
+
+      function clearChatHistory() {
+        const chatHistory = document.querySelector('.chat-history');
+        chatHistory.innerHTML = "";
+      }
+
+      const conversations = [
+      {
+          "description": "multi-conv",
+          "turns": [
+            ["User", "", "images/examples/conv_case_3.png"],
+            ["User", "What is the most common catchphrase of the character on the right?"],
+            ["ShareGPT4V-7B",
+              "The most common catchphrase of the character on the right is \"I am the one who knocks.\" This phrase is associated with the character Walter White from the TV show Breaking Bad, played by Bryan Cranston. Walter White is a methamphetamine manufacturer and distributor who is known for his intelligence, wit, and unpredictable behavior. The catchphrase is often used by Walter White to express his confidence and assertiveness, and it has become iconic in the series."
+            ],
+            ["User", "What kind of life would he have lived if he and Jesse Pinkman hadn't met?"],
+            ["ShareGPT4V-7B",
+              "If Walter White and Jesse Pinkman had never met, Walter White's life would have likely been very different. In the original timeline of the show, Walter White was a high school chemistry teacher who was diagnosed with cancer and decided to produce and sell methamphetamine to provide for his family after his death. He chose Jesse Pinkman, a former student and small-time criminal, as his partner in this venture." +
+              "\n\nWithout Jesse, Walter would have had to find another partner or work alone to produce and distribute the methamphetamine. He might have had to rely on his own skills and knowledge to create the product and find customers. However, without Jesse's skills, connections, and resourcefulness, Walter's operation would likely have been smaller and less successful." +
+              "\n\nAdditionally, without Jesse, Walter's character development would have been significantly altered. Jesse's presence and influence on Walter's life helped him to grow and change into the complex and morally ambiguous character that we see in the show. The relationship between Walter and Jesse is a central theme of Breaking Bad, and their dynamic drives much of the plot and character development."
+            ]
+          ]
+        },
+        {
+          "description": "suitcases",
+          "turns": [
+            ["User", "", "images/examples/cap_case_3.png"],
+            ["User", "Describe this image in detail."],
+            ["Share-Captioner",
+              "In the tranquil setting of a lush green lawn, three vintage suitcases, each a different size, are neatly arranged in a row. The smallest suitcase is positioned on the left, followed by the medium-sized one in the middle, and the largest suitcase on the right. Each suitcase is crafted from brown leather and features a sturdy brass handle on top, adding a touch of vintage charm to their appearance. \n\n" +
+              "The suitcases are not alone in this scene. Behind them, a brick wall stands tall, providing a rustic backdrop to the scene. Nestled against this wall is a small tree, its branches reaching out as if to touch the suitcases. Adding a splash of color to the scene is a blue tarp, spread out on the ground in front of the wall.\n\n" +
+              "The image captures a moment of stillness, with the suitcases waiting patiently for their next journey. The precise arrangement of the suitcases and their relative positions to each other and their surroundings create a harmonious composition that is pleasing to the eye."
+            ]
+          ]
+        },
+        {
+          "description": "tower",
+          "turns": [
+            ["User", "", "images/examples/cap_case_1.png"],
+            ["User", "Describe this image in detail."],
+            ["Share-Captioner",
+              "The image captures a serene scene at a waterfront. Dominating the left side of the frame is a tall, brown clock tower with a pointed roof. The tower is adorned with a clock face on each of its four sides, allowing time to be read from any direction.\n\n" +
+              "Adjacent to the clock tower, on the right side of the image, is a green building with a curved roof. The building's green color contrasts with the brown of the clock tower, adding a splash of color to the scene.\n\n" + 
+              "In the foreground, a body of water stretches out, reflecting the sky above and the buildings below. The water's surface is calm, mirroring the tranquility of the scene.\n\n" + 
+              "In the background, beyond the clock tower and green building, construction cranes can be seen, hinting at ongoing development in the area. Despite this, the overall atmosphere of the image remains peaceful and serene."           
+            ]
+          ]
+        },
+        {
+          "description": "reasoning",
+          "turns": [
+            ["User", "", "images/examples/conv_case_1.png"],
+            ["User", "What is interesting in this image?"],
+            ["ShareGPT4V-7B",
+              "The interesting aspect of this image is the combination of a hand-drawn illustration of a child holding a bunch of grapes and the actual grapes placed on top of the drawing." + 
+              " This creates a unique and creative visual effect, as the grapes appear to be floating above the child's head." + 
+              " The image combines art and reality in a playful and imaginative way, making it visually appealing and engaging."  
+            ]
+          ]
+        },
+        {
+          "description": "GPT4V",
+          "turns": [
+            ["User", "", "images/examples/cap_case_2.jpg"],
+            ["User", "Can you describe the main features of this image for me?"],
+            ["ShareGPT4V (100K)",
+              "The image is a captivating oil painting titled \"The Sower\", created by the renowned artist Vincent Van Gogh. It\'s a beautiful representation of post-impressionism art. The painting vividly portrays a farmer in the act of sowing seeds in a field. The field, awash with hues of yellow and blue, forms a striking contrast against the farmer\'s figure. In the distance, a quaint village landscape unfolds, complete with houses and trees. The colors used are vibrant, bringing the scene to life with their intensity. The brushstrokes are clearly visible, adding texture and depth to the painting. This artwork is a testament to Van Gogh\'s fascination with the countryside and the simple, yet profound, peasant life. "
+            ]
+          ]
+        },
+        {
+          "description": "analysis",
+          "turns": [
+            ["User", "", "images/examples/conv_case_2.png"],
+            ["User", "From a photography perspective, analyze what makes this picture beautiful?"],
+            ["ShareGPT4V-7B",
+              "From a photography perspective, the image is beautiful due to the combination of elements and the play of light and shadow." +
+              " The large hot air balloon, which is the main subject of the photo, is illuminated by a bright orange light, creating a striking contrast against the dark sky." +
+              " The balloon's vibrant colors and the glowing light make it stand out prominently in the scene. \n\nThe setting is a sandy beach at night, which adds a sense of tranquility and serenity to the image." +
+              " The silhouettes of people and vehicles in the foreground provide depth and context, indicating that the balloon is being prepared for a nighttime flight." +
+              "The low angle of the shot enhances the grandeur of the balloon, making it appear larger and more majestic.\n\n" +
+              " Overall, the image captures a unique moment of preparation and anticipation, with the hot air balloon as the centerpiece, set against a captivating nighttime backdrop." + 
+              " The play of light and shadow, the contrasting colors, and the composition of the scene all contribute to the beauty of this photograph." +
+              " It is a portrait painting that showcases the woman's enigmatic smile and has become one of the most famous and iconic art pieces in the world." +
+              " The original work is displayed in the Louvre Museum in Paris, and it is known for its intricate details, use of oil paint, and the artist's innovative techniques that contributed to its enduring appeal and mystery."
+            ]
+          ]
+        }
+      ];
+
+      let currentIndex = 0;
+
+      function update_dialog_demo() {
+        clearChatHistory();
+
+        for (let i = 0; i < conversations[currentIndex].turns.length; i++) {
+          if (conversations[currentIndex].turns[i].length == 2) {
+            addMessageToChatHistory(conversations[currentIndex].turns[i][0], conversations[currentIndex].turns[i][1]);
+          }
+          else {
+            addMessageToChatHistory(conversations[currentIndex].turns[i][0], conversations[currentIndex].turns[i][1], conversations[currentIndex].turns[i][2]);
+          }
+        }
+
+        document.querySelector('.chat-history').scrollTop = 0;
+      }
+
+      // Initialize the displayed image
+      update_dialog_demo();
+
+      // Event listeners for the buttons
+      document.getElementById('prev-question').addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + conversations.length) % conversations.length;
+        update_dialog_demo();
+      });
+
+      document.getElementById('next-question').addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % conversations.length;
+        update_dialog_demo();
+      });
+    </script>
+  
+  </body>
+
+</html>
