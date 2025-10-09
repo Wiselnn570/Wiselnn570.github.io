@@ -19,7 +19,7 @@ redirect_from:
 
 I am currently pursuing a PhD at <a href='https://www.fudan.edu.cn/en/'>Fudan University</a> under the supervision of Prof. <a href='http://dahua.site'>Dahua Lin</a>. Additionally, I am an intern at the <a href='https://www.shlab.org.cn/'>Shanghai AI Laboratory</a>, where I am mentored by <a href='https://yuhangzang.github.io'>Yuhang Zang</a>.
 
-My research interests lie in multimodal large language models (MLLMs), video understanding, and efficient reasoning. I am passionate about contributing to impactful and meaningful research. If you're interested in my work, please feel free to reach out to me via email or WeChat (Wiselnn570o0) for potential collaboration.
+My research interests lie in **multimodal large language models (MLLMs)**, **video understanding**, and **efficient reasoning**. I am passionate about contributing to impactful and meaningful research. If you're interested in my work, please feel free to reach out to me via email or WeChat (Wiselnn570o0) for **potential collaboration**.
 
 
 
@@ -37,9 +37,9 @@ My research interests lie in multimodal large language models (MLLMs), video und
 
 ***Xilin Wei****, Xiaoran Liu*, Yuhang Zang, Xiaoyi Dong, Pan Zhang, Yuhang Cao, Jian Tong, Haodong Duan, Qipeng Guo, Jiaqi Wang, Xipeng Qiu, Dahua Lin
 
-<span> This work presents VideoRoPE, which addresses four key properties essential for RoPE when applied to video. Motivated by our analysis, VideoRoPE introduces Low-frequency Temporal Allocation (LTA), Diagonal Layout (DL), and Adjustable Temporal Spacing (ATS), effectively satisfying all these properties. We also introduce the challenging V-NIAH-D retrieval task to highlight the shortcomings of current position embedding designs, particularly in terms of frequency allocation. Our findings show that existing Video LLMs are easily misled by frequency-based distractors. Extensive experiments demonstrate that VideoRoPE consistently outperforms other RoPE variants. For example, it achieves significant improvements in long video retrieval (+12.4 on V-NIAH, +12.4 on V-NIAH-D), video understanding (+2.9 on LongVideoBench, +4.5 on MLVU, +1.7 on Video-MME), and hallucination reduction (+11.9 on VideoHallucer).</span>
+<span> This work introduces VideoRoPE, which addresses four key properties essential for RoPE in video applications. By incorporating Low-frequency Temporal Allocation (LTA), Diagonal Layout (DL), and Adjustable Temporal Spacing (ATS), VideoRoPE effectively meets these requirements. We also present the V-NIAH-D retrieval task to expose the limitations of current position embedding designs, especially in frequency allocation. Our findings show that existing Video LLMs are prone to frequency-based distractors. Extensive experiments demonstrate that VideoRoPE consistently outperforms other RoPE variants.</span>
 
-[**Github** ![](https://img.shields.io/github/stars/Liuziyu77/Visual-RFT)](https://github.com/Liuziyu77/Visual-RFT)
+[**Github** ![](https://img.shields.io/github/stars/Wiselnn570/VideoRoPE)](https://github.com/Wiselnn570/VideoRoPE)
 </div>
 </div>
 
