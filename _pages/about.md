@@ -69,7 +69,7 @@ __Xilin Wei__, Xiaoran Liu, Yuhang Zang📧, Xiaoyi Dong, Yuhang Cao, Jiaqi Wang
 </div>
 </div>
 
-<div class='paper-box'><div class='paper-box-image'><div><div class="badge"></div><img src='images/videorope++' alt="VideoRoPE++" width="100%"></div></div>
+<div class='paper-box'><div class='paper-box-image'><div><div class="badge"></div><img src='images/videorope++.png' alt="VideoRoPE++" width="100%"></div></div>
 <div class='paper-box-text' markdown="1">
 
 [VideoRoPE++: Towards Better Video Rotary Position Embedding](https://github.com/Wiselnn570/VideoRoPE/tree/main/videorope_plus)
