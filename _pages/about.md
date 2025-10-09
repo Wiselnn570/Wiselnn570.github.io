@@ -17,32 +17,27 @@ redirect_from:
 
 <span class='anchor' id='about-me'></span>
 
-I am currently an intern at at <a href='https://www.shlab.org.cn/'>Shanghai AI Laboratory</a>, and pursuing a PhD at Shanghai Jiao Tong University.
+I am currently pursuing a PhD at <a href='https://www.fudan.edu.cn/en/'>Fudan University</a> under the supervision of Prof. <a href='http://dahua.site'>Dahua Lin</a>. Additionally, I am an intern at the <a href='https://www.shlab.org.cn/'>Shanghai AI Laboratory</a>, where I am mentored by <a href='https://yuhangzang.github.io'>Yuhang Zang</a>.
 
-My research interest includes multimodal large language models(MLLMs),  reinforcement fine-tuning(RFT), reinforcement learning from human feedback (RLHF)  and retrieval-argument generation(RAG).
+My research interests lie in multimodal large language models (MLLMs), video understanding, and efficient reasoning. I am passionate about contributing to impactful and meaningful research. If you're interested in my work, please feel free to reach out to me via email or WeChat (Wiselnn570o0) for potential collaboration.
 
 
 
 # 🔥 News
-- [2025-06-26] One paper, Visual-RFT, is accepted by ICCV 2025.
-- [2025-05-14] One paper, InternLM-XComposer2.5-Reward, is accepted by ACL 2025 Findind.
-- [2025-01-23] One paper, MIA-DPO, is accepted by ICLR2025.
-- [2024-10-24] One paper, "MIA-DPO: Multi-Image Augmented Direct Preference Optimization For Large Vision-Language Models," has been rated as the Huggingface **"#1 Paper of the Day"**.
-- [2024-09-28] Two papers, MMDU and MMLONGBENCH-DOC(spotlight), are accepted by NeurIPS2024.
-- [2024-06-18] One paper, "MMDU: A Multi-Turn Multi-Image Dialog Understanding Benchmark and Instruction-Tuning Dataset for LVLMs," has been rated as the Huggingface **"#1 Paper of the Day"**.
-- [2024-06] We are organizing the Visual Perception via Learning in an Open World: The 4th Workshop on Open World Vision and the V3Det Challenge at CVPR 2024.
+- [2025-05-01] One paper, VideoRoPE, is accepted by ICML 2025 as **oral presentation**.
+- [2024-09-28] Two papers, ShareGPT4Video and MMDU, are accepted by NeurIPS2024.
 
 
 # 📝 Selected Publications 
 
-<div class='paper-box'><div class='paper-box-image'><div><div class="badge"></div><img src='images/Visual-ARFT.png' alt="Visual-RFT" width="100%"></div></div>
+<div class='paper-box'><div class='paper-box-image'><div><div class="badge"></div><img src='images/videorope.png' alt="VideoRoPE" width="100%"></div></div>
 <div class='paper-box-text' markdown="1">
 
-[Visual-ARFT: Visual Agentic Reinforcement Fine-Tuning](https://github.com/Liuziyu77/Visual-RFT/tree/main/Visual-ARFT)
+[VideoRoPE: What Makes for Good Video Rotary Position Embedding?](https://github.com/Wiselnn570/VideoRoPE)***[Accepted by ICML2025 as Oral Presentation!]***
 
-***Ziyu Liu***, Yuhang Zang, Yushan Zou, Zijian Liang, Xiaoyi Dong, Yuhang Cao, Haodong Duan, Dahua Lin, Jiaqi Wang
+***Xilin Wei****, Xiaoran Liu*, Yuhang Zang, Xiaoyi Dong, Pan Zhang, Yuhang Cao, Jian Tong, Haodong Duan, Qipeng Guo, Jiaqi Wang, Xipeng Qiu, Dahua Lin
 
-<span> This work highlights the effectiveness of Visual Agentic Reinforcement Fine-Tuning (Visual-ARFT) for enabling flexible and adaptive reasoning abilities for Large Vision-Language Models (LVLMs). With Visual-ARFT, open-source LVLMs gain the ability to browse websites for real-time information updates and write code to manipulate and analyze input images through cropping, rotation, and other image processing techniques. We also present a Multi-modal Agentic Tool Bench (MAT) with two settings (MAT-Search and MAT-Coding) designed to evaluate LVLMs’ agentic search and coding abilities.</span>
+<span> This work presents VideoRoPE, which addresses four key properties essential for RoPE when applied to video. Motivated by our analysis, VideoRoPE introduces Low-frequency Temporal Allocation (LTA), Diagonal Layout (DL), and Adjustable Temporal Spacing (ATS), effectively satisfying all these properties. We also introduce the challenging V-NIAH-D retrieval task to highlight the shortcomings of current position embedding designs, particularly in terms of frequency allocation. Our findings show that existing Video LLMs are easily misled by frequency-based distractors. Extensive experiments demonstrate that VideoRoPE consistently outperforms other RoPE variants. For example, it achieves significant improvements in long video retrieval (+12.4 on V-NIAH, +12.4 on V-NIAH-D), video understanding (+2.9 on LongVideoBench, +4.5 on MLVU, +1.7 on Video-MME), and hallucination reduction (+11.9 on VideoHallucer).</span>
 
 [**Github** ![](https://img.shields.io/github/stars/Liuziyu77/Visual-RFT)](https://github.com/Liuziyu77/Visual-RFT)
 </div>
@@ -133,4 +128,3 @@ Yubo Ma, Yuhang Zang, Liangyu Chen, Meiqi Chen, Yizhu Jiao, Xinze Li, Xinyuan Lu
 
 # 📌 Activities
 - Conference reviewer of ICLR, Neurips.
-- Workshop organizing community of <a href='https://vplow.github.io/vplow_4th.html'>VPLOW@CVPR2024</a>
