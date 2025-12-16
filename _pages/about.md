@@ -19,7 +19,7 @@ redirect_from:
 
 I am currently pursuing a PhD at <a href='https://www.fudan.edu.cn/en/'>Fudan University</a> under the supervision of Prof. <a href='http://dahua.site'>Dahua Lin</a>. Additionally, I am an intern at the <a href='https://www.shlab.org.cn/'>Shanghai AI Laboratory</a>, where I am mentored by <a href='https://yuhangzang.github.io'>Yuhang Zang</a>.
 
-My research interests lie in **multimodal large language models (MLLMs)**, **video understanding**, and **efficient reasoning**. I am passionate about contributing to impactful and meaningful research. If you're interested in my work, please feel free to reach out to me via email or WeChat (Wiselnn570o0) for **potential collaboration**.
+My research interests lie in **multimodal large language models (MLLMs)**, **video understanding**, and **efficient reasoning**. I am passionate about contributing to impactful and meaningful research. If you're interested in my work, please feel free to reach out to me via email (wiselnn570@gmail.com) for **potential collaboration**.
 
 
 
